@@ -1,21 +1,53 @@
 -----1-----
-
+SELECT e.*, d.loc
+    FROM emple e, depart d
+WHERE e.dept_no = d.dept_no
+    AND d.loc IN ('MADRID', 'BARCELONA');
 -----2-----
-
+SELECT e.apellido, e.oficio, e.emp_no, d.dnombre, d.loc
+    FROM emple e, depart d
+WHERE e.dept_no = d.dept_no;
 -----3-----
-
+SELECT e.apellido, e.oficio, d.loc
+    FROM emple e, depart d
+WHERE e.dept_no = d.dept_no
+    AND e.oficio LIKE 'ANALISTA';
 -----4-----
-
+SELECT a.apenom, a.pobla, n.nota
+    FROM alumnos a, notas n
+WHERE a.dni = n.dni
+    AND n.nota < 5
+    AND a.pobla = 'Madrid';
 -----5-----
-
+SELECT p.p_nombre || ' ' || p.p_apellido, l.l_nombre
+    FROM pasajero p, lugar l
+WHERE p.pais_residencia = l.l_codigo
+    AND l.l_nombre = 'Australia';
 -----6-----
-
+SELECT e.apenom, a.nombre, n.nota
+    FROM alumnos e, asignaturas a, notas n
+WHERE e.dni = n.dni
+    AND a.cod = n.cod;
 -----7-----
-
+SELECT e.apenom, a.nombre
+    FROM alumnos e, asignaturas a, notas n
+WHERE e.dni = n.dni
+    AND a.cod = n.cod
+    AND a.nombre = 'FOL';
 -----8-----
-
+SELECT a.nombre, e.pobla
+    FROM alumnos e, asignaturas a, notas n
+WHERE e.dni = n.dni
+    AND a.cod = n.cod
+    AND a.nombre LIKE '%o%o%'
+    AND e.pobla = 'Madrid';
 -----9-----
-
+SELECT e.apenom, a.nombre, n.nota
+    FROM alumnos e, asignaturas a, notas n
+WHERE e.dni = n.dni
+    AND n.cod = a.cod
+    AND a.nombre = 'FOL'
+    AND n.nota BETWEEN 7 AND 8;
 -----10-----
 SELECT l_nombre, 
 CASE WHEN l_total_habitantes > 50000000 THEN 'Muy poblado'

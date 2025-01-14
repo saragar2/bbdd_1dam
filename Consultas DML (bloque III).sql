@@ -67,7 +67,10 @@ DELETE FROM centros
 -----15-----
 DELETE FROM centros; -------------------esta tambien
 -----16-----
-
+DELETE FROM libreria lib
+    WHERE ejemplares <= (SELECT AVG(ejemplares)
+                            FROM libreria
+                         WHERE lib.estante = libreria.estante); -----repasar, está hehco en clase
 -----17-----
 DELETE FROM depart
     WHERE (SELECT COUNT(emp_no)
@@ -97,12 +100,50 @@ INSERT INTO emple
 UPDATE emple
     SET dept_no = (SELECT dept_no
                         FROM emple
-                    WHERE (SELECT COUNT(emp_no)
-                                FROM emple
-                            GROUP BY dept_no) = (SELECT MAX(COUNT(emp_no))
+                    HAVING COUNT(emp_no) IN (SELECT MAX(COUNT(emp_no))
                                                     FROM emple
                                                  GROUP BY dept_no))
 WHERE LOWER(apellido) = 'saavedra'; ----está mal
 -----24-----
-
+DELETE FROM depart
+    WHERE dept_no NOT IN (SELECT DISTINCT(dept_no)
+                                FROM emple);
 -----25-----
+UPDATE centros
+    SET num_plazas = num_plazas / 2
+WHERE cod_centro IN (SELECT cod_centro
+                            FROM profesores
+                        GROUP BY cod_centro
+                        HAVING COUNT(DISTINCT(cod_centro)) < 2);
+-----26-----
+DELETE FROM centros
+    WHERE cod_centro NOT IN (SELECT DISTINCT(cod_centro)
+                                 FROM personal);
+-----27-----
+INSERT INTO profesores VALUES(10, 8790055, 'Clara Salas', 'idiomas');
+-----28-----
+DELETE FROM personal
+    WHERE (SELECT num_plazas
+                FROM centros) < 300
+            AND (SELECT COUNT(cod_centro)
+                     FROM profesores
+                 GROUP BY cod_centro) < 2; --------está mal
+-----29-----
+DELETE FROM profesores
+    WHERE dni NOT IN (SELECT dni
+                            FROM personal);
+-----30-----
+INSERT INTO articulos VALUES ('Chocolate', (SELECT cod_fabricante
+                                                FROM fabricantes
+                                            WHERE LOWER(pais) = 'francia'), 0, 'Primera', 0, 0, 5);
+-----31-----
+INSERT INTO pedidos
+    SELECT DISTINCT '111-A', articulo, cod_fabricante, peso, categoria, SYSDATE, 20
+        FROM ventas
+    WHERE articulo = (SELECT articulo
+                            FROM ventas
+                        GROUP BY articulo
+                        HAVING SUM(unidades_vendidas) = (SELECT MAX(SUM(unidades_vendidas))
+                                                            FROM ventas
+                                                         GROUP BY articulo)); ------inserta dos filas y no se por qué
+-----32-----
